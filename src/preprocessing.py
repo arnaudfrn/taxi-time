@@ -9,9 +9,8 @@ def glossary_feature_selection(path_glossary):
     return feature_list
 
 
-def create_target(path_airpotData):
-    df = pd.read_csv('path_airpotData')
-    df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
+def create_target(df_airportData):
+    df_filter = df_airportData[(~df_airportData['aibt'].isna()) & (~df_airportData['aldt'].isna()) & (df_airportData['aibt'] != 'aibt')].dropna(how = 'all')
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
 ## ----------------- Mathieu ---------------------------------
@@ -39,6 +38,14 @@ def filtering_AC_charac(path_correspondance,path_AC_charac):
     df_charac.drop_duplicates(subset='Model', keep="first",inplace=True)
 
     return df_charac
+
+def design_matrix_airport_data(PATH_airport_data):
+    #return clean dataset of airport data with index matching the one of the target variable
+    df = pd.read_csv(PATH_airport_data)
+    df_target = create_target(df)
+    df= df.iloc[pd.DataFrame(df_target).index]
+    df.drop(columns=['aibt','aldt'],inplace=True)
+    return df
 
 ## ----------------- Miny ---------------------------------
 
