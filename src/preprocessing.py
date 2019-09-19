@@ -7,7 +7,7 @@ def glossary_feature_selection(path):
 
 
 def create_target(df):
-    df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')]
+    df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = ‘all’)
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
 ## ----------------- Mathieu ---------------------------------
