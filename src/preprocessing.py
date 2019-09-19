@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 ## -------------------- ARNAUD ----------------------------------
 def glossary_feature_selection(path):
     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
@@ -7,7 +10,7 @@ def glossary_feature_selection(path):
 
 
 def create_target(df):
-    df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = ‘all’)
+    df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
 ## ----------------- Mathieu ---------------------------------
