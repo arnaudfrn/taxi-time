@@ -103,5 +103,5 @@ def weather_clean(path_weather):
 def join_weather_airport(dataFrame_airport, dataFrame_weather):
     dataFrame_airport['date']=pd.to_datetime(dataFrame_airport['eibt']).dt.date
     dataFrame_airport.set_index('date',inplace=True)
-    X_merged=dataFrame_airport.join(dataFrame_weather,how='left')
+    X_merged=dataFrame_airport.join(dataFrame_weather,how='left').reset_index().rename(columns={"index": "date"})
     return X_merged
