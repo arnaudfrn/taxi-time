@@ -45,6 +45,34 @@ def design_matrix_airport_data(PATH_airport_data):
     df_target = create_target(df)
     df= df.iloc[pd.DataFrame(df_target).index]
     df.drop(columns=['aibt','aldt'],inplace=True)
+
+    useful_variable = ['acReg',
+                   'acars_out',
+                   'aibt_received',
+                   'aldt_received',
+                   'gpu_off',
+                   'gpu_on',
+                   'last_distance_to_gate',
+                   'last_in_sector',
+                   'mode_s',
+                   'partition',
+                   'pca_off',
+                   'pca_on',
+                   'roll',
+                   'speed',
+                   'sqt',
+                   'stand_active',
+                   'stand_auto_start',
+                   'stand_docking',
+                   'stand_free',
+                   'stand_last_change',
+                   'stand_prepared',
+                   'stand_scheduled',
+                   'status',
+                   'towbar_on',
+                   'vdgs_in',
+                   'vdgs_out']
+    df.drop(columns=useful_variable,inplace=True)
     return df
 
 ## ----------------- Miny ---------------------------------
