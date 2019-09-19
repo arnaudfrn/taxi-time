@@ -2,14 +2,15 @@ import pandas as pd
 import numpy as np
 
 ## -------------------- ARNAUD ----------------------------------
-def glossary_feature_selection(path):
+def glossary_feature_selection(path_glossary):
     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
-    columns_df = pd.read_excel(path, sheet_name = 1).iloc[:,[0,2]]
+    columns_df = pd.read_excel(path_glossary, sheet_name = 1).iloc[:,[0,2]]
     feature_list = [columns_df.iloc[:,0].tolist()[i] for i in range((len(columns_df.iloc[:,1].tolist()))) if columns_df.iloc[:,1].tolist()[i] not in ignore ]
     return feature_list
 
 
-def create_target(df):
+def create_target(path_airpotData):
+    df = pd.read_csv('path_airpotData')
     df_filter = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
@@ -41,8 +42,8 @@ def filtering_AC_charac(path_correspondance,path_AC_charac):
 
 ## ----------------- Miny ---------------------------------
 
-def weather_clean(path):
-    df = pd.read_csv(path, parse_dates=[0])
+def weather_clean(path_weather):
+    df = pd.read_csv(path_weather, parse_dates=[0])
     df.drop(columns=['PGTM'], inplace=True)
     df = df.groupby('DATE').agg({'AWND': 'mean', 'PRCP': 'sum',
                        'SNOW': 'max','SNWD': 'sum','TAVG': 'mean','TMAX': 'max',
