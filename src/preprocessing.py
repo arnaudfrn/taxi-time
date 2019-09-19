@@ -38,6 +38,7 @@ def filtering_AC_charac(path_correspondance,path_AC_charac):
 
     return df_charac
 
+## Meta fuction to create final airport dataset
 def design_matrix_airport_data(PATH_airport_data):
     #return clean dataset of airport data with index matching the one of the target variable
     df = pd.read_csv(PATH_airport_data)
@@ -75,7 +76,8 @@ def design_matrix_airport_data(PATH_airport_data):
                        'plb_off',
                        'eobt',
                        'aobt',
-                       'atot']
+                       'atot',
+                       'ship']
     df.drop(columns=toDrop_variable,inplace=True)
     return df
 
