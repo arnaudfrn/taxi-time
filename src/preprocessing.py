@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
 # -------------------- ARNAUD ----------------------------------
-def glossary_feature_selection(path_glossary):
-    ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
-    columns_df = pd.read_excel(path_glossary, sheet_name = 1).iloc[:,[0,2]]
-    feature_list = [columns_df.iloc[:,0].tolist()[i] for i in range((len(columns_df.iloc[:,1].tolist()))) if columns_df.iloc[:,1].tolist()[i] not in ignore ]
-    return feature_list
+
+# Unused function, d'après TwoMiles on l'a fait à la Mano (Je, Miny, me porte responsable de cette mise en commentaire)
+
+# def glossary_feature_selection(path_glossary):
+#     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
+#     columns_df = pd.read_excel(path_glossary, sheet_name = 1).iloc[:,[0,2]]
+#     feature_list = [columns_df.iloc[:,0].tolist()[i] for i in range((len(columns_df.iloc[:,1].tolist()))) if columns_df.iloc[:,1].tolist()[i] not in ignore ]
+#     return feature_list
 
 
 def create_target(df_airportData):
