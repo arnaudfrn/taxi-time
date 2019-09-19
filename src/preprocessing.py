@@ -3,6 +3,11 @@ import numpy as np
 # -------------------- ARNAUD ----------------------------------
 
 # Unused function, d'après TwoMiles on l'a fait à la Mano (Je, Miny, me porte responsable de cette mise en commentaire)
+# *Tristan*
+# Je suis d'accord, j'ai d'ailleurs créer plusieurs fonctions pour récupérer les dataframes dont on aura besoin apres
+# Je les ai mises dans ma partie en dessous. J'ai aussi mis un notebook pour que vous puissiez voir les résultats
+# on en reparle demain
+
 
 # def glossary_feature_selection(path_glossary):
 #     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
@@ -124,3 +129,77 @@ def join_weather_airport(dataFrame_airport, dataFrame_weather):
     dataFrame_airport.set_index('date',inplace=True)
     X_merged=dataFrame_airport.join(dataFrame_weather,how='left').reset_index().rename(columns={"index": "date"})
     return X_merged
+
+
+
+
+
+
+
+# ------------------- Tristan ----------------------------
+## Cleaning data from the raw csv
+## input: path to csv
+## ourput : df with all rows (arriving and departing planes)
+def cleaning_airport_df(path_to_airport_csv):
+    columns_to_drop = ['partition',
+                       'acReg',
+                       'acars_out',
+                       'aibt_received',
+                       'aldt_received',
+                       'gpu_off',
+                       'gpu_on',
+                       'last_distance_to_gate',
+                       'last_in_sector',
+                       'mode_s',
+                       'pca_off',
+                       'pca_on',
+                       'plb_on',
+                       'plb_off',
+                       'ship', 
+                       'roll',
+                       'speed',
+                       'sqt',
+                       'stand_active',
+                       'stand_auto_start',
+                       'stand_docking',
+                       'stand_free',
+                       'stand_last_change',
+                       'stand_prepared',
+                       'stand_scheduled',
+                       'status',
+                       'towbar_on',
+                       'vdgs_in',
+                       'vdgs_out']
+    df_raw = pd.read_csv(path_to_airport_csv)
+    df_clean = df_raw.drop(columns_to_drop, axis=1).dropna(how="all")
+    return df_clean
+
+
+
+# get the obserations of the training dataset
+## input: clean df from cleaning_airport_df function
+## Output: simplest dataset before any merge to get the target value for each observation
+def get_df_of_obs1(df_clean1):
+    df_obs = df_clean1[(~df_clean1['aibt'].isna())
+                       & (~df_clean1['aldt'].isna())
+                       & (df_clean1['aibt'] != 'aibt')] 
+    df_obs = df_obs.drop(['eobt','aobt','atot'], axis=1)
+#this is because some rows have the name of the columns as value (string that has nothing to do with the shmilblick)
+    return df_obs
+
+
+# calculate the target value based on the dataframe where aibt et aldt time are in two columns
+def get_target_values(df_obs):
+    target = pd.DataFrame((pd.to_datetime(df_obs['aibt']) - pd.to_datetime(df_obs['aldt'])).astype('timedelta64[s]'))
+    return target
+
+
+
+
+
+
+
+
+
+
+
