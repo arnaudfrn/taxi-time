@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-
-## -------------------- ARNAUD ----------------------------------
+# -------------------- ARNAUD ----------------------------------
 def glossary_feature_selection(path_glossary):
     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
     columns_df = pd.read_excel(path_glossary, sheet_name = 1).iloc[:,[0,2]]
@@ -44,9 +43,9 @@ def design_matrix_airport_data(PATH_airport_data):
     df = pd.read_csv(PATH_airport_data)
     df_target = create_target(df)
     df= df.iloc[pd.DataFrame(df_target).index]
-    df.drop(columns=['aibt','aldt'],inplace=True)
+    df.drop(columns=['aibt'],inplace=True)
 
-    useful_variable = ['acReg',
+    toDrop_variable = ['acReg',
                        'acars_out',
                        'aibt_received',
                        'aldt_received',
@@ -77,11 +76,13 @@ def design_matrix_airport_data(PATH_airport_data):
                        'eobt',
                        'aobt',
                        'atot']
-    df.drop(columns=useful_variable,inplace=True)
+    df.drop(columns=toDrop_variable,inplace=True)
     return df
 
 ## ----------------- Miny ---------------------------------
 
+## Input: weather file provided
+## Ouput: Pandas dataframe with clean weather data
 def weather_clean(path_weather):
     df = pd.read_csv(path_weather, parse_dates=[0])
     df.drop(columns=['PGTM'], inplace=True)
@@ -94,3 +95,11 @@ def weather_clean(path_weather):
     df.drop(columns=['SNOW','SNWD'], inplace=True)
     df.fillna(0, inplace=True)
     return df
+
+## input: Two clean pandas dataset using 'design_matrix_airport_data' and 'weather_clean'
+## Output: Merged pandas dataset on dates
+def join_weather_airport(dataFrame_airport, dataFrame_weather):
+    dataFrame_airport['date']=pd.to_datetime(dataFrame_airport['eibt']).dt.date
+    dataFrame_airport.set_index('date',inplace=True)
+    X_merged=dataFrame_airport.join(dataFrame_weather,how='left')
+    return X_merged
