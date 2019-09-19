@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-
-## -------------------- ARNAUD ----------------------------------
+# -------------------- ARNAUD ----------------------------------
 def glossary_feature_selection(path_glossary):
     ignore = ['To ignore', 'to ignore',  'Technical characteristic to ignore', 'Aircraft Type (with another regulation -not to be used for the case)']
     columns_df = pd.read_excel(path_glossary, sheet_name = 1).iloc[:,[0,2]]
@@ -39,14 +38,15 @@ def filtering_AC_charac(path_correspondance,path_AC_charac):
 
     return df_charac
 
+## Meta fuction to create final airport dataset
 def design_matrix_airport_data(PATH_airport_data):
     #return clean dataset of airport data with index matching the one of the target variable
     df = pd.read_csv(PATH_airport_data)
     df_target = create_target(df)
     df= df.iloc[pd.DataFrame(df_target).index]
-    df.drop(columns=['aibt','aldt'],inplace=True)
+    df.drop(columns=['aibt'],inplace=True)
 
-    useful_variable = ['acReg',
+    toDrop_variable = ['acReg',
                        'acars_out',
                        'aibt_received',
                        'aldt_received',
@@ -76,8 +76,9 @@ def design_matrix_airport_data(PATH_airport_data):
                        'plb_off',
                        'eobt',
                        'aobt',
-                       'atot']
-    df.drop(columns=useful_variable,inplace=True)
+                       'atot',
+                       'ship']
+    df.drop(columns=toDrop_variable,inplace=True)
     return df
 
 def correspondance_dictionnary(Path_correspondance):
@@ -98,6 +99,8 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     return df_merged
 ## ----------------- Miny ---------------------------------
 
+## Input: weather file provided
+## Ouput: Pandas dataframe with clean weather data
 def weather_clean(path_weather):
     df = pd.read_csv(path_weather, parse_dates=[0])
     df.drop(columns=['PGTM'], inplace=True)
@@ -110,3 +113,11 @@ def weather_clean(path_weather):
     df.drop(columns=['SNOW','SNWD'], inplace=True)
     df.fillna(0, inplace=True)
     return df
+
+## input: Two clean pandas dataset using 'design_matrix_airport_data' and 'weather_clean'
+## Output: Merged pandas dataset on dates
+def join_weather_airport(dataFrame_airport, dataFrame_weather):
+    dataFrame_airport['date']=pd.to_datetime(dataFrame_airport['eibt']).dt.date
+    dataFrame_airport.set_index('date',inplace=True)
+    X_merged=dataFrame_airport.join(dataFrame_weather,how='left').reset_index().rename(columns={"index": "date"})
+    return X_merged
