@@ -11,7 +11,7 @@ def create_target(df):
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
 ## ----------------- Mathieu ---------------------------------
-def reading_data(PATH,sheet):
+def reading_data(PATH,sheet=None):
     # Read csv or xlsx
     if PATH.endswith('xlsx'):
         x = pd.read_excel(PATH,sheet_name=sheet)
@@ -35,3 +35,18 @@ def filtering_AC_charac(path_correspondance,path_AC_charac):
     df_charac.drop_duplicates(subset='Model', keep="first",inplace=True)
 
     return df_charac
+
+## ----------------- Miny ---------------------------------
+
+def weather_clean(path):
+    df = pd.read_csv(path, parse_dates=[0])
+    df.drop(columns=['PGTM'], inplace=True)
+    df = df.groupby('DATE').agg({'AWND': 'mean', 'PRCP': 'sum',
+                       'SNOW': 'max','SNWD': 'sum','TAVG': 'mean','TMAX': 'max',
+                        'TMIN': 'min','WDF2': 'max','WDF5': 'max',
+                        'WSF2': 'max','WSF5': 'max','WT01': 'max',
+                        'WT02': 'max','WT03': 'max','WT08':'max'})
+    df['SnowProxi'] = (df['PRCP'] > 0.0) & (df['TAVG'] < 45.0)
+    df.drop(columns=['SNOW','SNWD'], inplace=True)
+    df.fillna(0, inplace=True)
+    return df
