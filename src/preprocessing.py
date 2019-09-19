@@ -80,6 +80,22 @@ def design_matrix_airport_data(PATH_airport_data):
     df.drop(columns=useful_variable,inplace=True)
     return df
 
+def correspondance_dictionnary(Path_correspondance):
+    #convert the pickle correspondance which is a dataframe in a dictionnary
+    matching = pd.read_pickle(Path_correspondance)
+    matching_dict = dict(zip(matching.AirportData.str.lower().str.strip(), matching.Accharac.str.lower().str.strip()))
+    return matching_dict
+
+def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
+    #add the characteristic of aircraft to the design matrix
+    #df: design matrix dataframe
+    #df_charac : clean aircraft characteristic dataframe
+    #matching_dict : dictionnary of correspondance
+    df['acType']= df['acType'].str.lower().str.strip()
+    df_charac['Model'] = df_charac['Model'].str.lower().str.strip()
+    df['acType'] = df['acType'].map(matching_dict)
+    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
+    return df_merged
 ## ----------------- Miny ---------------------------------
 
 def weather_clean(path_weather):
