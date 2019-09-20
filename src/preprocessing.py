@@ -27,6 +27,9 @@ def reading_data(PATH,sheet=None):
         x = pd.read_excel(PATH,sheet_name=sheet)
     if PATH.endswith('csv'):
         x = pd.read_csv(PATH)
+    else : 
+    	print("file not readable....")
+    	pass
     return x
 
 def filtering_AC_charac(path_correspondance,path_AC_charac):
@@ -104,7 +107,7 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     df['acType']= df['acType'].str.lower().str.strip()
     df_charac['Model'] = df_charac['Model'].str.lower().str.strip()
     df['acType'] = df['acType'].map(matching_dict)
-    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
+    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left').drop(columns=['aibt'],inplace=True)
     return df_merged
 ## ----------------- Miny ---------------------------------
 
@@ -156,7 +159,7 @@ def cleaning_airport_df(path_to_airport_csv):
                        'pca_on',
                        'plb_on',
                        'plb_off',
-                       'ship',
+                       'ship', 
                        'roll',
                        'speed',
                        'sqt',
@@ -183,7 +186,7 @@ def cleaning_airport_df(path_to_airport_csv):
 def get_df_of_obs1(df_clean1):
     df_obs = df_clean1[(~df_clean1['aibt'].isna())
                        & (~df_clean1['aldt'].isna())
-                       & (df_clean1['aibt'] != 'aibt')]
+                       & (df_clean1['aibt'] != 'aibt')] 
     df_obs = df_obs.drop(['eobt','aobt','atot'], axis=1)
 #this is because some rows have the name of the columns as value (string that has nothing to do with the shmilblick)
     return df_obs
@@ -193,3 +196,4 @@ def get_df_of_obs1(df_clean1):
 def get_target_values(df_obs):
     target = pd.DataFrame((pd.to_datetime(df_obs['aibt']) - pd.to_datetime(df_obs['aldt'])).astype('timedelta64[s]'))
     return target
+
