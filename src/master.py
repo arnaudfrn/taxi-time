@@ -21,8 +21,7 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
         Path_correspondance_Aircraft_Airport)
 
 # Merging the three dataset received
-    X_final = augmented_design_matrix_with_AC_charac(
-        X_merged, df_charac, matching_dict)
+    X_final = augmented_design_matrix_with_AC_charac(X_merged, df_charac, matching_dict)
 
     return X_final
 
