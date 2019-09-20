@@ -194,13 +194,3 @@ def get_target_values(df_obs):
     target = pd.DataFrame((pd.to_datetime(df_obs['aibt']) - pd.to_datetime(df_obs['aldt'])).astype('timedelta64[s]'))
     return target
 
-
-
-
-
-
-
-
-
-
-
