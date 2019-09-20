@@ -52,7 +52,8 @@ def design_matrix_airport_data(PATH_airport_data):
     df = pd.read_csv(PATH_airport_data)
     df_target = create_target(df)
     df= df.iloc[pd.DataFrame(df_target).index]
-    df.drop(columns=['aibt'],inplace=True)
+    #df.drop(columns=['aibt'],inplace=True)
+    #If, we cannot use this function to get the dataset used in the create_targetfunction.
 
     toDrop_variable = ['acReg',
                        'acars_out',
@@ -103,7 +104,7 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     df['acType']= df['acType'].str.lower().str.strip()
     df_charac['Model'] = df_charac['Model'].str.lower().str.strip()
     df['acType'] = df['acType'].map(matching_dict)
-    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
+    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left').drop(columns=['aibt'],inplace=True)
     return df_merged
 ## ----------------- Miny ---------------------------------
 
