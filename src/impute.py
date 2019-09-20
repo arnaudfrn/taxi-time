@@ -21,3 +21,17 @@ def impute_acType(df):
     df_final = df[(df['acType'].isna()) & (~df['flight'].isna())].drop('acType', axis = 1).merge(df_flight_impute, how = 'left', on = ["flight"])
 
     return df_final
+
+# ------------------- Xav ----------------------------
+
+def impute_chocks_on(df) :
+    """
+    function imputing missing values for chocks_on. For now stupid imputation.
+    NEEDS SOME WORK    
+
+    input: original pd.dataFrame with missing chocks_on
+    output: pd.DataFrame with no missing chocks_on
+    """
+
+    df.chocks_on = df.chocks_on.replace(np.nan, -1)
+    return df

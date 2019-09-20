@@ -197,3 +197,19 @@ def get_target_values(df_obs):
     target = pd.DataFrame((pd.to_datetime(df_obs['aibt']) - pd.to_datetime(df_obs['aldt'])).astype('timedelta64[s]'))
     return target
 
+
+# ------------------- Xav ----------------------------
+
+def create_sku(df):
+    """
+    function building unique ID for each flight 
+
+    input: original pd.dataFrame without unique ID
+    output: pd.DataFrame with unique ID named 'sku' in first column
+    """
+
+    df['sku'] = (df.date.map(str) + df.flight.map(str)).map(lambda x : x.replace(' 00:00:00','').replace('-',''))
+    df = df[df.columns.tolist()[-1:] + df.columns.tolist()[:-1]]
+    return df
+
+
