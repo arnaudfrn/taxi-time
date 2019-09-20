@@ -9,6 +9,9 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 
  # Creation of airport and weather dataframe
     X_airport = design_matrix_airport_data(Path_AirportData)
+
+    ### X_airport = get_df_obs1(cleaning_airport_df(Path_AirportData)) (same with Tristan's functions)
+
     X_weather = weather_clean(Path_WeatherData)
 
 # Merging both dataframes
@@ -23,6 +26,9 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 # Merging the three dataset received
     X_final = augmented_design_matrix_with_AC_charac(
         X_merged, df_charac, matching_dict)
+
+# Drop useless columns    
+    X_final = X_final.drop(['Date Completed'], axis=1)
 
     return X_final
 
