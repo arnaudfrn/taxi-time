@@ -85,7 +85,7 @@ def average_taxitime_stand_last_X_min(stand_S, time_t, M_min):
 ## output: integer (last taxi time in minutes)
 def get_last_taxitime_runway(runway_R, time_t):
     t1 = pd.to_datetime(time_t)
-    res = df3.iloc[df1[(df1['runway']==runway_R) & (df1['aibt']<t1)]['aibt'].idxmax()][0]
+    res = df3.loc[df1[(df1['runway']==runway_R) & (df1['aibt']<t1)]['aibt'].idxmax()][0]
     return res
 
 # taxi_time of the last plane that have stayed at stand_S at time_t
@@ -93,7 +93,7 @@ def get_last_taxitime_runway(runway_R, time_t):
 ## output: integer (last taxi time in minutes)
 def get_last_taxitime_stand(stand_S, time_t):
     t1 = pd.to_datetime(time_t)
-    res = df3.iloc[df1[(df1['stand']==stand_S) & (df1['aibt']<t1)]['aibt'].idxmax()][0]
+    res = df3.loc[df1[(df1['stand']==stand_S) & (df1['aibt']<t1)]['aibt'].idxmax()][0]
     return res
 
     
@@ -102,7 +102,5 @@ def get_last_taxitime_stand(stand_S, time_t):
 ## output: integer (last taxi time of the plane that went from runway_R to stand_S)
 def get_last_taxitime_path(runway_R, stand_S, time_t):
     t1 = pd.to_datetime(time_t)
-    res = df3.iloc[df1[(df1['runway']==runway_R) &
-                       (df1['stand']==stand_S) & 
-                       (df1['aibt']<t1)]['aibt'].idxmax()][0]
+    res = df3.loc[df1[(df1['runway']==runway_R) & (df1['stand']==stand_S) & (df1['aibt']<t1)]['aibt'].idxmax()][0]
     return res
