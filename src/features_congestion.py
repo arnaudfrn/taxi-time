@@ -62,7 +62,7 @@ def get_nb_of_planes_stand_in_last_M_min(stand_S, time_t, M_min):
 def average_taxitime_runway_last_X_min(runway_R, time_t, M_min): 
     t1 = pd.to_datetime(time_t)
     t2 = t1-timedelta(minutes = M_min)
-    list_of_index = df1[(df1[df1['runway']==runway_R]) & 
+    list_of_index = df1[(df1['runway']==runway_R) & 
                         (df1['aibt']<t1) & 
                         (df1['aibt']>t2)].index
     res = df3.loc[list_of_index][0].mean()
@@ -74,7 +74,7 @@ def average_taxitime_runway_last_X_min(runway_R, time_t, M_min):
 def average_taxitime_stand_last_X_min(stand_S, time_t, M_min): 
     t1 = pd.to_datetime(time_t)
     t2 = t1-timedelta(minutes = M_min)
-    list_of_index = df1[(df1[df1['stand']==stand_S]) & 
+    list_of_index = df1[(df1['stand']==stand_S) & 
                         (df1['aibt']<t1) & 
                         (df1['aibt']>t2)].index
     res = df3.loc[list_of_index][0].mean()
