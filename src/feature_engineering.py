@@ -38,13 +38,22 @@ def dummies(X,col_category) :
     X = pd.get_dummies(X, columns=col_category,drop_first=True)
     return X
 
-def drop_imput_scaled_dummies(X,col_numerical,col_to_drop,col_category):
-     X = drop_columns(X,col_to_drop)
-     X = imputation(X,col_numerical)
-     #X = scaling(X,col_numerical)
-     X = dummies(X,col_category)
-     return X
-
+    ## df = final df from master.master_preprocessing
+    ## y = y from get_target.get_target
+    ## agg_fct is an aggregative fct eg:"mean"
+    ## drop is if we don't want the column anymore
+    ## column_list =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
+def traget_encoding(df,column_list,y,agg_fct,drop=False):
+    for column in column_list:
+        target_enco_acType = pd.concat([df[column],y], axis=1)
+        target_enco_acType = target_enco_acType.groupby(df[column]).agg(agg_fct)
+        target_enco_acType = target_enco_acType.to_dict()['target']
+        df['target_encoding_'+column]=df[column].map(target_enco_acType)
+        if drop == True:
+            df.drop(columns=column, inplace=True)
+        else:
+            continue
+        return df
 
 
 def train_test_split(X,y,test_size=1000):
@@ -66,6 +75,8 @@ def RMSE(y_test,pred):
     calculated_RMSE = np.sqrt(mean_squared_error(pred_in_min,y_test_in_min))
     return RMSE
 
+<<<<<<< HEAD
+=======
     ## df = final df from master.master_preprocessing
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
@@ -131,3 +142,9 @@ def create_rolling_average_same_runway_and_stand(df):
     return res
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 7997dcf7b0c542081b9e0f3013da5585c4681104
+>>>>>>> da9766d3f03989a66bd197a64e334423ae610594
