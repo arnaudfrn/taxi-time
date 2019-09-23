@@ -11,4 +11,5 @@ def get_target(Path_airport):
             preprocessing.cleaning_airport_df(Path_airport)
             )
                 )
+    y.reset_index()
     return y
