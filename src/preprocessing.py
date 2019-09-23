@@ -20,6 +20,13 @@ def create_target(df_airportData):
     df_filter = df_airportData[(~df_airportData['aibt'].isna()) & (~df_airportData['aldt'].isna()) & (df_airportData['aibt'] != 'aibt')].dropna(how = 'all')
     return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
 
+
+def change_type(df):
+  df = df.assign(aibt = lambda d: pd.to_datetime(d['aibt']),
+            aldt = lambda d: pd.to_datetime(d['aldt']),
+            target = lambda d: (d['aibt'] - d['aldt']).astype('timedelta64[s]'))
+  return df
+  
 ## ----------------- Mathieu ---------------------------------
 def reading_data(PATH,sheet=None):
     # Read csv or xlsx
@@ -142,10 +149,10 @@ def weather_clean(path_weather):
 ## input: Two clean pandas dataset using 'design_matrix_airport_data' and 'weather_clean'
 ## Output: Merged pandas dataset on dates
 def join_weather_airport(dataFrame_airport, dataFrame_weather):
-    X_airport['date'] = pd.to_datetime(X_airport['eibt']).dt.date
-    X_weather['date'] = X_weather.index
-    X_weather['date'] = X_weather['date'].dt.date
-    X_merged = X_airport.merge(X_weather, how='left', on = ['date'])
+    dataFrame_airport['date'] = pd.to_datetime(dataFrame_airport['eibt']).dt.date
+    dataFrame_weather['date'] = dataFrame_weather.index
+    dataFrame_weather['date'] = dataFrame_weather['date'].dt.date
+    X_merged = dataFrame_airport.merge(dataFrame_weather, how='left', on = ['date'])
     return X_merged
 
 
