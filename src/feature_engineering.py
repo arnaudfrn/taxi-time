@@ -120,15 +120,14 @@ def create_rolling_average_same_stand(df):
 def create_rolling_average_same_runway_and_stand(df):
     df['stand']=df['stand'].astype(str)
     df['runway']=df['runway'].astype(str)
-
-    ra_st = df[df['stand']==df['stand'].unique()[0]][['aldt','target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()
-    for st in df['stand'].unique()[1:]:
-        
-        ra_st= pd.concat([ra_st, df[df['stand']==st][['aldt', 'target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()])
-    ra_st.name = 'rolling average same stand'
-    res = df.join(ra_st)
+    ra_rwst = df[(df['stand']==df['stand'].unique()[0]) &
+             (df['runway']==df['runway'].unique()[0])][['aldt','target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=5).mean()
+    for rw in df['runway'].unique()[1:]:
+        for st in df['stand'].unique()[1:]:
+            ra_rwst = pd.concat([ra_rwst, df[(df['stand']==st) &
+                                         (df['runway']==rw)][['aldt', 'target']].sort_values('aldt').rename(columns={'aldt':'ds', 'target':'y'}).y.rolling(window=5).mean()])
+    ra_rwst.name = 'rolling average same runway & same stand'
+    res = df.join(ra_rwst)
     return res
-
-
 
 
