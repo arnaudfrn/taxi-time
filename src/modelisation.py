@@ -1,6 +1,7 @@
-# ——— Xav ———
+import pandas as pd 
+import numpy as np
 
-def compute_rmse(y, y_pred)
+def compute_rmse(y, y_pred):
     """
     function computing RMSE 
 
@@ -9,39 +10,36 @@ def compute_rmse(y, y_pred)
     """
     return np.sqrt(((y_pred - y)**2).mean()) / 60
 
-def linear_reg(X,y):
+def compute_mape(y, y_pred):
+    """
+    function computing RMSE 
 
-    from sklearn.linear_model import LinearRegression
-    import statsmodels.api as sm
-    
-    reg = LinearRegression().fit(X, y)
-    model = sm.OLS(y, X)
-    results = model.fit()
-    y_pred = reg.predict(X)
-    
-    # statsmodel gives a good summary of model performance
-    print(results.summary())
-    return y_pred
+    input: real target values and predicted values
+    output : root mean squared error in minutes
+    """
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100 / 60
 
 def encoding_df(df, cols):
-        """
+    """
     function to encode categorical. 
-    BEWARE : do not put all the columns in there otherwise it overloads the RAM and breaks the kernel. Do not use those columns, as there is too many unique values :
+    BEWARE : do not put all the columns in there otherwise it overloads the RAM and breaks the kernel. Do not use those columns,
+    as there is too many unique values :
 
-sku                               131071
-flight                              3570
-sto                                77649
-aldt                               97252
-eibt                               88465
-cibt                               87972
-aibt                               88146
-chocks_on                          76545
+    sku                               131071
+    flight                              3570
+    sto                                77649
+    aldt                               97252
+    eibt                               88465
+    cibt                               87972
+    aibt                               88146
+    chocks_on                          76545
 
     input: df and columns to encode
     output : encoded df without integer and float columns
 
     """
-    df = df[cols].copy()
+    import pandas as pd
+    df = df[cols]
     obj_df = df.select_dtypes(include=['object']).copy()
     num_var = df.select_dtypes(include=['int','float']).copy()
     cat_var = pd.get_dummies(obj_df, columns = obj_df.columns)
@@ -51,7 +49,7 @@ chocks_on                          76545
 # TEST
 # encoding_df(df,['PRCP','TAVG','AWND','TMAX','carrier'])
 
-----------
+#----------
 
 def decision_tree(df, variables,test_size):
     """
@@ -82,7 +80,7 @@ def decision_tree(df, variables,test_size):
 # variables = ['carrier','runway','stand','Manufacturer','PRCP','TAVG','AWND','TMAX','TMIN','WDF2','WDF5','WSF2','WSF5','WT01','WT02','WT03','WT08','Approach Speed\n(Vref)']
 # decision_tree(df, variables,0.10)
 
-----------
+# ----------
 
 def linear_reg(df, variables, test_size):
     """
