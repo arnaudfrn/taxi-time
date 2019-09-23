@@ -12,12 +12,30 @@ def compute_rmse(y, y_pred):
 
 def compute_mape(y, y_pred):
     """
-    function computing RMSE 
+    function computing MAPE 
 
     input: real target values and predicted values
     output : root mean squared error in minutes
     """
-    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100 / 60
+    return np.mean(np.abs((y - y_pred) / y)) * 100 / 60
+
+def tenth_percentile(y_test, y_pred) :
+    """
+    Compute the value of the 10th worse error 
+
+    input: real target values and predicted values
+    output : value of the 10th percentile error
+    """
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.10)]
+
+def ninetieth_percentile(y_test, y_pred) :
+    """
+    Compute the value of the 90th worse error 
+
+    input: real target values and predicted values
+    output : value of the 90th percentile error
+    """
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]
 
 def encoding_df(df, cols):
     """
@@ -74,11 +92,11 @@ def decision_tree(df, variables,test_size):
     clf = clf.fit(X_train, y_train)
 
     print(compute_rmse(y_test, clf.predict(X_test)))
-    return clf.predict(X_test)
+    return clf.predict(X_test), y_test
 
 # TEST
 # variables = ['carrier','runway','stand','Manufacturer','PRCP','TAVG','AWND','TMAX','TMIN','WDF2','WDF5','WSF2','WSF5','WT01','WT02','WT03','WT08','Approach Speed\n(Vref)']
-# decision_tree(df, variables,0.10)
+# decision_tree(df, variables, 0.10)
 
 # ----------
 
@@ -90,7 +108,6 @@ def linear_reg(df, variables, test_size):
     output : predicted values and rmse
 
     """
-
     from sklearn.model_selection import train_test_split
     from sklearn.linear_model import LinearRegression
 
@@ -102,11 +119,52 @@ def linear_reg(df, variables, test_size):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
-    reg = LinearRegression().fit(X_train, y_train)
+    clf = LinearRegression().fit(X_train, y_train)
 
-    print(compute_rmse(y_test, reg.predict(X_test)))
-    return reg.predict(X_test)
+    print('Linear Regression RMSE',compute_rmse(y_test, clf.predict(X_test)))
+    return clf.predict(X_test), y_test
 
 # TEST
 # variables = ['carrier','runway','stand','Manufacturer','PRCP','TAVG','AWND','TMAX','TMIN','WDF2','WDF5','WSF2','WSF5','WT01','WT02','WT03','WT08','Approach Speed\n(Vref)']
 # linear_reg(df, variables,0.10)
+
+
+def master_modelisation(X,y,test_size,model_function_list) :
+    """
+    function aggregating models and building comparison table
+
+    input: training features, target values, test_size, list of functions created that are models
+    output : table
+
+    """    
+    models = model_function_list
+    
+    output = pd.DataFrame()
+    model = []
+    RMSE = []
+    MAPE = []
+    tenth_perc = []    
+    ninetieth_perc = []
+    
+    for i in models:
+        output_row = pd.DataFrame()
+        
+        model.append(i)
+        
+        y_pred, y_test = i(df, variables, test_size)
+
+        RMSE.append(compute_rmse(y_test, y_pred))
+        MAPE.append(compute_mape(y_test, y_pred))
+        tenth_perc.append(tenth_percentile(y_test, y_pred))   
+        ninetieth_perc.append(ninetieth_percentile(y_test, y_pred))
+        
+    output['Model'] = model
+    output['RMSE'] = RMSE
+    output['MAPE'] = MAPE
+    output['tenth_perc'] = tenth_perc
+    output['ninetieth_perc'] = ninetieth_perc
+        
+    return output
+
+# TEST
+# master_modelisation(X,y,0.10,[linear_reg,decision_tree])
