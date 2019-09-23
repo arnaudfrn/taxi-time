@@ -15,7 +15,7 @@ def compute_rmse(y, y_pred)\
     input: real target values and predicted values\
     output : root mean squared error in minutes\
     """\
-    return np.sqrt((y - y_pred)**2).mean() / 60\
+    return np.sqrt(((y_pred - y)**2).mean()) / 60\
 \
 def linear_reg(X,y):\
     """\
