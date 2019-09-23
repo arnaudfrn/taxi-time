@@ -90,7 +90,7 @@ def traget_encoding(df,column_list,y,agg_fct,drop=False):
 # -------------------- Tristan ----------------------------------
 
 ## function to get the rolling average of the last 10 planes that landed on the same runway
-### input: dataframe (clean one, just before running a model)
+### input: dataframe (clean one, just before running a model) with a column 'target'
 ### output: same dataframe with a new column corresponding to this feature
 def create_rolling_average_same_runway(df):
     df['runway']=df['runway'].astype(str)
@@ -101,19 +101,33 @@ def create_rolling_average_same_runway(df):
     res = df.join(ra_rw)
     return res
 
-## function to get the rolling average of the last 10 planes that arrive at the same stand
-### input: dataframe (clean one, just before running a model)
+## function to get the rolling average of the last 10 planes that arrived at the same stand
+### input: dataframe (clean one, just before running a model) with a column 'target'
 ### output: same dataframe with a new column corresponding to this feature
 def create_rolling_average_same_stand(df):
     df['stand']=df['stand'].astype(str)
     ra_st = df[df['stand']==df['stand'].unique()[0]][['aldt','target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()
     for st in df['stand'].unique()[1:]:
-        ra_rst= pd.concat([ra_st, df[df['stand']==st][['aldt', 'target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()])
+        ra_st= pd.concat([ra_st, df[df['stand']==st][['aldt', 'target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()])
     ra_st.name = 'rolling average same stand'
     res = df.join(ra_st)
     return res
 
 
+## function to get the rolling average of the last 5 planes that landed on the same runway and arrived at the same stand
+### input: dataframe (clean one, just before running a model) with a column 'target'
+### output: same dataframe with a new column corresponding to this feature
+def create_rolling_average_same_runway_and_stand(df):
+    df['stand']=df['stand'].astype(str)
+    df['runway']=df['runway'].astype(str)
+
+    ra_st = df[df['stand']==df['stand'].unique()[0]][['aldt','target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()
+    for st in df['stand'].unique()[1:]:
+        
+        ra_st= pd.concat([ra_st, df[df['stand']==st][['aldt', 'target']].sort_values('aldt').rename(columns={'aldt':'ds','target':'y'}).y.rolling(window=10).mean()])
+    ra_st.name = 'rolling average same stand'
+    res = df.join(ra_st)
+    return res
 
 
 
