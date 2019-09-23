@@ -142,8 +142,10 @@ def weather_clean(path_weather):
 ## input: Two clean pandas dataset using 'design_matrix_airport_data' and 'weather_clean'
 ## Output: Merged pandas dataset on dates
 def join_weather_airport(dataFrame_airport, dataFrame_weather):
-    dataFrame_airport['date']=pd.to_datetime(dataFrame_airport['eibt']).dt.date
-    X_merged=dataFrame_airport.join(dataFrame_weather,how='left').reset_index().rename(columns={"index": "date"})
+    X_airport['date'] = pd.to_datetime(X_airport['eibt']).dt.date
+    X_weather['date'] = X_weather.index
+    X_weather['date'] = X_weather['date'].dt.date
+    X_merged = X_airport.merge(X_weather, how='left', on = ['date'])
     return X_merged
 
 
