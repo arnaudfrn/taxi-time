@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import mean_squared_error
+
 # -------------------- Mathieu----------------------------------
 
 def imputation(X,col_numerical):
@@ -60,5 +63,5 @@ def RF_modeling(X_train,X_test,y_train):
 def RMSE(y_test,pred):
     pred_in_min = pred/60
     y_test_in_min = [x/60 for x in y_test[0].tolist()]
-    calculated_RMSE = np.sqrt(sk.metrics.mean_squared_error(pred_in_min,y_test_in_min))
+    calculated_RMSE = np.sqrt(mean_squared_error(pred_in_min,y_test_in_min))
     return RMSE
