@@ -188,6 +188,9 @@ def cleaning_airport_df(path_to_airport_csv):
                        'vdgs_out']
     df_raw = pd.read_csv(path_to_airport_csv)
     df_clean = df_raw.drop(columns_to_drop, axis=1).dropna(how="all")
+    for col in ['aldt', 'aibt','aobt', 'atot']:
+      df_clean[col] = pd.to_datetime(df1[col]) 
+
     return df_clean
 
 
