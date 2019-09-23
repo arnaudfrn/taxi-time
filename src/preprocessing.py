@@ -107,14 +107,14 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     df_charac['Model'] = df_charac['Model'].str.lower().str.strip()
 
     #Inverting the dictionnary to replace values in df_charac['Model] by the values of df['acType]
-    inv_map = {v: k for k, v in matching_dict.items()}
-    df_charac['Model']=df_charac['Model'].map(lambda x: inv_map[x])
+    #inv_map = {v: k for k, v in matching_dict.items()}
+    df_charac['Model']=df_charac['Model'].map(lambda x: matching_dict[x])
 
     #Merging
     df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
 
     #Transfom date columns in date format
-    list_dates=['date','sto','aldt','eibt','cibt','chock_on']
+    list_dates=['sto','aldt','eibt','cibt','chock_on']
     for column in list_dates:
         df_merged[column]=pd.to_datetime(df_merged[column])
 
