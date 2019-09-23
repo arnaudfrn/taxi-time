@@ -25,7 +25,7 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
     X_final = preprocessing.augmented_design_matrix_with_AC_charac(X_merged, df_charac, matching_dict)
 
 # Drop useless columns    
-    X_final = X_final.drop(['Date'], axis=1)
+    X_final = X_final.drop(['date'], axis=1)
 
     return X_final
 
