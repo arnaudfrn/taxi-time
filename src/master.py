@@ -3,15 +3,13 @@ import pandas as pd
 import os
 import sys
 from src import preprocessing
+from src import feature_engineering
 
 
 def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Path_correspondance_Aircraft_Airport):
 
  # Creation of airport and weather dataframe
     X_airport = preprocessing.design_matrix_airport_data(Path_AirportData)
-
-    ### X_airport = get_df_obs1(cleaning_airport_df(Path_AirportData)) (same with Tristan's functions)
-
     X_weather = preprocessing.weather_clean(Path_WeatherData)
 
 # Merging both dataframes
@@ -26,27 +24,28 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 
 # Drop useless columns    
     X_final = X_final.drop(['date'], axis=1)
-
-    #X_full = preprocessing.change_type(X_final)
-
-    return X_final
-
-
-def feature_engineering(X_final):
-
     
     return X_final
 
 
-########## Miny's Test ############
-#import os
-# import sys
-# import pandas as pd
-# sys.path.append("..")
-# from src import preprocessing
-# from src import master
-# master.master_preprocessing_X('../../0. Airport data/Airport_Data.csv',
-#                               '../../2. Weather data/weather_data_prep.csv',
-#                               '../../1. AC characteristics/ACchar.xlsx',
-#                               '../Correspondance.pkl')
-####################################
+def create_target(df):
+    df = preprocessing.change_type(df)
+    df = pd.DataFrame(df['target'])
+    return df
+
+
+    ## X = final df from master.master_preprocessing
+    ## col_numerical = numerical columns of X
+    ## col_to_drop = the columns we don't want in X
+    ## col_category = the colonnes where we want dummys
+    ## col_to_target_encode =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
+    ## y = y from get_target.get_target
+    ## agg_fct is an aggregative fct eg:"mean"
+    ## drop is if we don't want the column anymore
+def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop):
+     X = feature_engineering.drop_columns(X,col_to_drop)
+     X = feature_engineering.imputation(X,col_numerical)
+     X = feature_engineering.dummies(X,col_dummies)
+     X = feature_engineering.traget_encoding(X,col_to_target_encode,y,agg_value,drop)
+     return X
+    

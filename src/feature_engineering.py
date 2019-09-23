@@ -55,15 +55,6 @@ def traget_encoding(df,column_list,y,agg_fct,drop=False):
             continue
         return df
 
-#Function with mean for target encoding
-def drop_imput_encode_dummies(X,col_numerical,col_to_drop,col_category,col_to_target_encode,y,Path_airportData):
-     X = drop_columns(X,col_to_drop)
-     X = imputation(X,col_numerical)
-     X = dummies(X,col_category)
-     X = traget_encoding(X,col_to_target_encode,y,"mean",drop=True)
-     return X
-
-
 
 def train_test_split(X,y,test_size=1000):
     X_train, X_test = X[0:len(X)-test_size], X[len(X)-test_size:len(X)]
