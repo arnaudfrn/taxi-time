@@ -16,18 +16,24 @@ import numpy as np
 #     return feature_list
 
 
-def create_target(df_airportData):
+def create_target(df):
     #df_filter = df_airportData[(~df_airportData['aibt'].isna()) & (~df_airportData['aldt'].isna()) & (df_airportData['aibt'] != 'aibt')].dropna(how = 'all')
     #return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
-    df = change_type(df_airportData)
+    df = change_type(df)
     df = pd.DataFrame(df['target'])
     return df
 
 
 def change_type(df):
-  df = df.assign(aibt = lambda d: pd.to_datetime(d['aibt']),
-            aldt = lambda d: pd.to_datetime(d['aldt']),
-            target = lambda d: (d['aibt'] - d['aldt']).astype('timedelta64[s]'))
+  df = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
+  df['aibt'] = pd.to_datetime(df['aibt'])
+  df['aldt'] = pd.to_datetime(df['aldt'])
+  df['target'] = (pd.to_datetime(df['aibt']) - pd.to_datetime(df['aldt'])).astype('timedelta64[s]')
+  #df = df.assign(aibt = lambda d: pd.to_datetime(d['aibt']),
+  #          aldt = lambda d: pd.to_datetime(d['aldt']))
+            #target = lambda d: (d['aibt'] - d['aldt']).astype('timedelta64[s]'))
+  #df = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
+  #df['target'] = (df['aibt'] - df['aldt']).astype('timedelta64[s]')
   return df
 
 ## ----------------- Mathieu ---------------------------------
