@@ -29,7 +29,10 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 
     return X_final
 
+def feature_engineering(X_final):
 
+    
+    return X_final
 
 
 ########## Miny's Test ############
