@@ -25,11 +25,10 @@ def reading_data(PATH,sheet=None):
     # Read csv or xlsx
     if PATH.endswith('xlsx'):
         x = pd.read_excel(PATH,sheet_name=sheet)
-    if PATH.endswith('csv'):
+    elif PATH.endswith('csv'):
         x = pd.read_csv(PATH)
     else : 
     	print("file not readable....")
-    	pass
     return x
 
 def filtering_AC_charac(path_correspondance,path_AC_charac):
@@ -55,8 +54,6 @@ def design_matrix_airport_data(PATH_airport_data):
     df = pd.read_csv(PATH_airport_data)
     df_target = create_target(df)
     df= df.iloc[pd.DataFrame(df_target).index]
-    #df.drop(columns=['aibt'],inplace=True)
-    #If, we cannot use this function to get the dataset used in the create_targetfunction.
 
     toDrop_variable = ['acReg',
                        'acars_out',
@@ -104,10 +101,26 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     #df: design matrix dataframe
     #df_charac : clean aircraft characteristic dataframe
     #matching_dict : dictionnary of correspondance
+
+    #Preparing the columns for replacment
     df['acType']= df['acType'].str.lower().str.strip()
     df_charac['Model'] = df_charac['Model'].str.lower().str.strip()
-    df['acType'] = df['acType'].map(matching_dict)
-    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left').drop(columns=['aibt'],inplace=True)
+
+    #Inverting the dictionnary to replace values in df_charac['Model] by the values of df['acType]
+    inv_map = {v: k for k, v in matching_dict.items()}
+    df_charac['Model']=df_charac['Model'].map(lambda x: inv_map[x])
+
+    #Merging
+    df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
+
+    #Transfom date columns in date format
+    list_dates=['date','sto','aldt','eibt','cibt','chock_on']
+    for column in list_dates:
+        df_merged[column]=pd.to_datetime(df_merged[column])
+
+    #Delete Date completed column
+    df_merged.drop(columns=['Date Completed'], inplace=True)
+
     return df_merged
 ## ----------------- Miny ---------------------------------
 
@@ -130,7 +143,6 @@ def weather_clean(path_weather):
 ## Output: Merged pandas dataset on dates
 def join_weather_airport(dataFrame_airport, dataFrame_weather):
     dataFrame_airport['date']=pd.to_datetime(dataFrame_airport['eibt']).dt.date
-    dataFrame_airport.set_index('date',inplace=True)
     X_merged=dataFrame_airport.join(dataFrame_weather,how='left').reset_index().rename(columns={"index": "date"})
     return X_merged
 
