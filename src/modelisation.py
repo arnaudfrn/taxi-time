@@ -12,12 +12,30 @@ def compute_rmse(y, y_pred):
 
 def compute_mape(y, y_pred):
     """
-    function computing RMSE 
+    function computing MAPE 
 
     input: real target values and predicted values
     output : root mean squared error in minutes
     """
-    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100 / 60
+    return np.mean(np.abs((y - y_pred) / y)) * 100 / 60
+
+def tenth_percentile(y_test, y_pred) :
+    """
+    Compute the value of the 10th worse error 
+
+    input: real target values and predicted values
+    output : value of the 10th percentile error
+    """
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.10)]
+
+def ninetieth_percentile(y_test, y_pred) :
+    """
+    Compute the value of the 90th worse error 
+
+    input: real target values and predicted values
+    output : value of the 90th percentile error
+    """
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]
 
 def encoding_df(df, cols):
     """
