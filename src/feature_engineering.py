@@ -43,7 +43,7 @@ def dummies(X,col_category) :
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
     ## column_list =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
-def traget_encoding(df,column_list,y,agg_fct,drop=False):
+def target_encoding(df,column_list,y,agg_fct,drop=False):
     for column in column_list:
         target_enco_acType = pd.concat([df[column],y], axis=1)
         target_enco_acType = target_enco_acType.groupby(df[column]).agg(agg_fct)
@@ -74,9 +74,6 @@ def RMSE(y_test,pred):
     y_test_in_min = [x/60 for x in y_test[0].tolist()]
     calculated_RMSE = np.sqrt(mean_squared_error(pred_in_min,y_test_in_min))
     return RMSE
-
-<<<<<<< HEAD
-=======
     ## df = final df from master.master_preprocessing
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
@@ -164,3 +161,5 @@ def master_feature_engineering(df, pickle_path):
 
 
 
+=======
+>>>>>>> 7432e989b05bd6a85c1271428d2c0f9a00318fbb

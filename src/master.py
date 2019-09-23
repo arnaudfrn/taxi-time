@@ -24,7 +24,7 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 
 # Drop useless columns    
     X_final = X_final.drop(['date'], axis=1)
-    
+
     return X_final
 
 
@@ -37,15 +37,22 @@ def create_target(df):
     ## X = final df from master.master_preprocessing
     ## col_numerical = numerical columns of X
     ## col_to_drop = the columns we don't want in X
-    ## col_category = the colonnes where we want dummys
-    ## col_to_target_encode =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
+    ## col_dummies = the colonnes where we want dummys
+    ## col_to_target_encode = ['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
-def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop):
-     X = feature_engineering.drop_columns(X,col_to_drop)
-     X = feature_engineering.imputation(X,col_numerical)
-     X = feature_engineering.dummies(X,col_dummies)
-     X = feature_engineering.traget_encoding(X,col_to_target_encode,y,agg_value,drop)
+def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop,CatBoost=False):
+     
+    X = feature_engineering.drop_columns(X,col_to_drop)
+    X = feature_engineering.imputation(X,col_numerical)
+    X = feature_engineering.target_encoding(X,col_to_target_encode,y,agg_value,drop)
+    if Catboost:
+        X[col_dummies] = X[col_dummies].apply(lambda x: x.astype('str'))
+        X[col_numerical] = X[col_numerical].apply(lambda x: x.astype('float'))
+        X[col_to_target_encode] = X[col_to_target_encode].apply(lambda x: x.astype('float'))
+    else:
+        X = feature_engineering.dummies(X,col_dummies)
+
      return X
     
