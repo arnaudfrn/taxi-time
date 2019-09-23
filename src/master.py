@@ -22,7 +22,7 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 # Merging the three dataset received
     X_final = preprocessing.augmented_design_matrix_with_AC_charac(X_merged, df_charac, matching_dict)
 
-# Drop useless columns    
+# Drop useless columns
     X_final = X_final.drop(['date'], axis=1)
 
     return X_final
@@ -43,7 +43,7 @@ def create_target(df):
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
 def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop,CatBoost=False):
-     
+
     X = feature_engineering.drop_columns(X,col_to_drop)
     X = feature_engineering.imputation(X,col_numerical)
     X = feature_engineering.target_encoding(X,col_to_target_encode,y,agg_value,drop)
@@ -54,5 +54,4 @@ def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encod
     else:
         X = feature_engineering.dummies(X,col_dummies)
 
-     return X
-    
+    return X

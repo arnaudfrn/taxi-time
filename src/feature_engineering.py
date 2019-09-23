@@ -150,16 +150,3 @@ def master_feature_engineering(df, pickle_path):
     df_augmented = create_rolling_average_same_stand(df_augmented)
     df_augmented = create_rolling_average_same_runway_and_stand(df_augmented)
     return df_augmented
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 815683a2408541f70a77121ca310552e32df0cf5
