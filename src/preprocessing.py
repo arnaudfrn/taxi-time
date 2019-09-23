@@ -188,8 +188,9 @@ def cleaning_airport_df(path_to_airport_csv):
                        'vdgs_out']
     df_raw = pd.read_csv(path_to_airport_csv)
     df_clean = df_raw.drop(columns_to_drop, axis=1).dropna(how="all")
+    df_clean = df_clean[df_clean['aibt']!='aibt']
     for col in ['aldt', 'aibt','aobt', 'atot']:
-      df_clean[col] = pd.to_datetime(df1[col]) 
+      df_clean[col] = pd.to_datetime(df_clean[col]) 
 
     return df_clean
 
@@ -209,7 +210,7 @@ def get_df_of_obs1(df_clean1):
 
 # calculate the target value based on the dataframe where aibt et aldt time are in two columns
 def get_target_values(df_obs):
-    target = pd.DataFrame((pd.to_datetime(df_obs['aibt']) - pd.to_datetime(df_obs['aldt'])).astype('timedelta64[s]'))
+    target = pd.DataFrame((df_obs['aibt'] - df_obs['aldt']).astype('timedelta64[s]'))
     return target
 
 
