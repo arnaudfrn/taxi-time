@@ -137,3 +137,29 @@ def create_rolling_average_same_runway_and_stand(df):
     ra_rwst.name = 'rolling average same runway & same stand'
     res = df.join(ra_rwst)
     return res
+
+
+
+#### MASTER FEATURE ENGINEERING ###
+# function that returns the dataframe with the target variable ready for models
+## input : ouput of master preprocessing function (dataframe) merged with target (as a column called 'target') and pickle path of the FEATURE THAT TAKES A FUCKING WHILE TO CREATE
+## output: dataframe with new variable ready to use
+def master_feature_engineering(df, pickle_path):
+    df['nb of planes in movement in the plane'] = pd.read_pickle(path)
+    df_augmented = create_rolling_average_same_runway(df)
+    df_augmented = create_rolling_average_same_stand(df_augmented)
+    df_augmented = create_rolling_average_same_runway_and_stand(df_augmented)
+    return df_augmented
+    
+
+
+
+
+
+
+
+
+
+
+=======
+>>>>>>> 7432e989b05bd6a85c1271428d2c0f9a00318fbb
