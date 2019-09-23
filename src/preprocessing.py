@@ -114,7 +114,7 @@ def augmented_design_matrix_with_AC_charac(df,df_charac,matching_dict):
     df_merged = pd.merge(df, df_charac, left_on='acType', right_on='Model', how='left')
 
     #Transfom date columns in date format
-    list_dates=['sto','aldt','eibt','cibt','chock_on']
+    list_dates=['sto','aldt','eibt','cibt']
     for column in list_dates:
         df_merged[column]=pd.to_datetime(df_merged[column])
 
