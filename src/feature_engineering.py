@@ -47,7 +47,7 @@ def drop_imput_scaled_dummies(X,col_numerical,col_to_drop,col_category):
 
 
 
-def train_test_split(X,y,test_size=1000):
+def train_test_split(X,y,test_size=10000):
     X_train, X_test = X[0:len(X)-test_size], X[len(X)-test_size:len(X)]
     y_train, y_test = y[0:len(y)-test_size], y[len(y)-test_size:len(y)]
     return X_train,X_test,y_train,y_test
