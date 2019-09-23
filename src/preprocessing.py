@@ -17,8 +17,11 @@ import numpy as np
 
 
 def create_target(df_airportData):
-    df_filter = df_airportData[(~df_airportData['aibt'].isna()) & (~df_airportData['aldt'].isna()) & (df_airportData['aibt'] != 'aibt')].dropna(how = 'all')
-    return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
+    #df_filter = df_airportData[(~df_airportData['aibt'].isna()) & (~df_airportData['aldt'].isna()) & (df_airportData['aibt'] != 'aibt')].dropna(how = 'all')
+    #return (pd.to_datetime(df_filter['aibt']) - pd.to_datetime(df_filter['aldt'])).astype('timedelta64[s]')
+    df = change_type(df_airportData)
+    df = pd.DataFrame(df['target'])
+    return df
 
 
 def change_type(df):
@@ -26,7 +29,7 @@ def change_type(df):
             aldt = lambda d: pd.to_datetime(d['aldt']),
             target = lambda d: (d['aibt'] - d['aldt']).astype('timedelta64[s]'))
   return df
-  
+
 ## ----------------- Mathieu ---------------------------------
 def reading_data(PATH,sheet=None):
     # Read csv or xlsx
@@ -34,7 +37,7 @@ def reading_data(PATH,sheet=None):
         x = pd.read_excel(PATH,sheet_name=sheet)
     elif PATH.endswith('csv'):
         x = pd.read_csv(PATH)
-    else : 
+    else :
     	print("file not readable....")
     return x
 
@@ -180,7 +183,7 @@ def cleaning_airport_df(path_to_airport_csv):
                        'pca_on',
                        'plb_on',
                        'plb_off',
-                       'ship', 
+                       'ship',
                        'roll',
                        'speed',
                        'sqt',
@@ -199,7 +202,7 @@ def cleaning_airport_df(path_to_airport_csv):
     df_clean = df_raw.drop(columns_to_drop, axis=1).dropna(how="all")
     df_clean = df_clean[df_clean['aibt']!='aibt']
     for col in ['aldt', 'aibt','aobt', 'atot']:
-      df_clean[col] = pd.to_datetime(df_clean[col]) 
+      df_clean[col] = pd.to_datetime(df_clean[col])
 
     return df_clean
 
@@ -211,7 +214,7 @@ def cleaning_airport_df(path_to_airport_csv):
 def get_df_of_obs1(df_clean1):
     df_obs = df_clean1[(~df_clean1['aibt'].isna())
                        & (~df_clean1['aldt'].isna())
-                       & (df_clean1['aibt'] != 'aibt')] 
+                       & (df_clean1['aibt'] != 'aibt')]
     df_obs = df_obs.drop(['eobt','aobt','atot'], axis=1)
 #this is because some rows have the name of the columns as value (string that has nothing to do with the shmilblick)
     return df_obs
@@ -227,7 +230,7 @@ def get_target_values(df_obs):
 
 def create_sku(df):
     """
-    function building unique ID for each flight 
+    function building unique ID for each flight
 
     input: original pd.dataFrame without unique ID
     output: pd.DataFrame with unique ID named 'sku' in first column
@@ -236,5 +239,3 @@ def create_sku(df):
     df['sku'] = (df.date.map(str) + df.flight.map(str)).map(lambda x : x.replace(' 00:00:00','').replace('-',''))
     df = df[df.columns.tolist()[-1:] + df.columns.tolist()[:-1]]
     return df
-
-
