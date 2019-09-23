@@ -27,7 +27,10 @@ def master_preprocessing_X(Path_AirportData, Path_WeatherData, Path_Aircraft, Pa
 # Drop useless columns    
     X_final = X_final.drop(['date'], axis=1)
 
+    #X_full = preprocessing.change_type(X_final)
+
     return X_final
+
 
 def feature_engineering(X_final):
 
