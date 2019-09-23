@@ -65,3 +65,22 @@ def RMSE(y_test,pred):
     y_test_in_min = [x/60 for x in y_test[0].tolist()]
     calculated_RMSE = np.sqrt(mean_squared_error(pred_in_min,y_test_in_min))
     return RMSE
+
+    ## df = final df from master.master_preprocessing
+    ## y = y from get_target.get_target
+    ## agg_fct is an aggregative fct eg:"mean"
+    ## drop is if we don't want the column anymore
+
+    ## column_list =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
+
+def traget_encoding(df,column_list,y,agg_fct,drop=False):
+    for column in column_list:
+        target_enco_acType = pd.concat([df[column],y], axis=1)
+        target_enco_acType = target_enco_Model.groupby(df[column]).agg(agg_fct)
+        target_enco_acType = target_enco_acType.to_dict()['target']
+        df['target_encoding_'+column]=df[column].map(target_enco_acType)
+        if drop == True:
+            df.drop(columns=column, inplace=True)
+        else:
+            continue
+        return df

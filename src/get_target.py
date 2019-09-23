@@ -12,4 +12,6 @@ def get_target(Path_airport):
             )
                 )
     y.reset_index()
+    y.drop(columns='index', inplace=True)
+    y.rename(columns={0:'target'}, inplace=True)
     return y
