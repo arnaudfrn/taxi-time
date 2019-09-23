@@ -120,7 +120,7 @@ def linear_reg(df, variables, test_size):\
     reg = LinearRegression().fit(X_train, y_train)\
 \
     print(compute_rmse(y_test, reg.predict(X_test)))\
-    return clf.predict(X_test)\
+    return reg.predict(X_test)\
 \
 # TEST\
 # variables = ['carrier','runway','stand','Manufacturer','PRCP','TAVG','AWND','TMAX','TMIN','WDF2','WDF5','WSF2','WSF5','WT01','WT02','WT03','WT08','Approach Speed\\n(Vref)']\
