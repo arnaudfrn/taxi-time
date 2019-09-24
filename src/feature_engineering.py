@@ -139,6 +139,11 @@ def master_feature_engineering(df, pickle_path):
 
 
 
+
+
+#--------------------- Arnaud ----------------------
+
+
 def number_of_plane_at_the_gate(df):
     """
     function computing the number of plane at the gate in the closest hour before the flight
@@ -148,7 +153,7 @@ def number_of_plane_at_the_gate(df):
     #Create column time taking both aodt, aibt
     df.loc[:,'time'] = df['aibt']
     df.loc[df['time'].isna(), 'time'] = df.loc[df['time'].isna(), 'aobt']
-    df = df[(~df['time'].isna()) & (df['time'].isin(['aibt', 'cibt', 'aldt', 'aobt', 'eldt']))]
+    df = df[(~df['time'].isna()) & (~df['time'].isin(['aibt', 'cibt', 'aldt', 'aobt', 'eldt']))]
     
     #set time to index to groupby
     df.loc[:,'time'] = pd.to_datetime(df['time'])
@@ -175,16 +180,19 @@ def number_of_plane_at_the_gate(df):
 
     return df
 
-def plane_landing_last_hour(X, y):
+def plane_landing_last_hour(X):
     """
     function that takes X dataframe WITH AIBT variable and compute the number of plane that take of in the closest round hour
     return dataframe with new variable number_plane_landing
 
 
     #### TO SOLVE #####
+
+    SOLVED
+
     """
 
-    featuredf = pd.concat([y, X], axis = 1)
+    featuredf = X[:]
     featuredf['number_plane_landing'] =  1
     featuredf['aibt'] = pd.to_datetime(featuredf['aibt'])
     
@@ -196,8 +204,11 @@ def plane_landing_last_hour(X, y):
     X['aibt'] = pd.to_datetime(X['aibt'])
     X = X.set_index('aibt').sort_index()
     
-    df = pd.merge_asof(Xfeature, featuredf[['number_plane_landing' ]], on = 'aibt', direction = 'nearest')
+    df = pd.merge_asof(X, featuredf[['number_plane_landing' ]], on = 'aibt', direction = 'nearest')
     return df
+
+
+
 
 def number_plane_takeoff(X, path_airport):  
     """
@@ -218,6 +229,54 @@ def number_plane_takeoff(X, path_airport):
     X['aibt'] = pd.to_datetime(X['aibt'])
     X = X.set_index('aibt').sort_index()
 
-    df = pd.merge_asof(Xfeature, featuredf[['number_plane_takeoff' ]], on = 'aibt', direction = 'nearest')
+    df = pd.merge_asof(X, featuredf[['number_plane_takeoff' ]], on = 'aibt', direction = 'nearest')
     return df
+
+
+
+
+# ---------------- Tristan's version of Arnaud's functions ------------
+
+
+def use_arnaud_function1(df, Path_Airporttrain, Path_Airporttest):
+    df_raw = pd.concat([pd.read_csv(Path_Airporttrain),pd.read_csv(Path_Airporttest)]).reset_index(drop=True)
+    df_arnaud = number_of_plane_at_the_gate(df_raw)[['aibt', 'number_of_plane_at_the_gate']]
+    df_arnaud['aibt'] = df_arnaud['aibt'].astype(str)
+    df['aibt'] = df['aibt'].astype(str)
+    df_arnaud = df_arnaud.drop_duplicates('aibt')
+    res = df.merge(df_arnaud, how='left', on='aibt')
+    res['aibt']=pd.to_datetime(res['aibt'])
+    return res
+
+
+def arnaud_function3(X, Path_Airporttrain, Path_Airporttest):  
+    """
+    compute the number of plane taking off in the closest hour to landing. 
+    input X: df of data preprocessed
+    input path_airport: path to airport data
+    output df of row len(X)
+    """
+    df1 = cleaning_airport_df(Path_Airporttrain)
+    df2 = cleaning_airport_df(Path_Airporttest)
+    df = pd.concat([df1, df2])
+
+    df.loc[:,'number_plane_takeoff'] =  1
+    df = df[(~df['aobt'].isna())]
+    df['aobt'] = pd.to_datetime(df['aobt'])
+
+    df = (df.set_index('aobt')
+                 .resample('60T')
+                 .sum()
+                 .sort_index())
+    X['aibt'] = pd.to_datetime(X['aibt'])
+    X = X.set_index('aibt').sort_index()
+
+    df = pd.merge_asof(X, featuredf[['number_plane_takeoff' ]], on = 'aibt', direction = 'nearest')
+    return df
+
+
+
+
+
+
 
