@@ -25,7 +25,8 @@ def create_target(df):
 
 
 def change_type(df):
-  df = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
+
+  df = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')& (df['aibt'] != 'cibt')].dropna(how = 'all')
   df['aibt'] = pd.to_datetime(df['aibt'])
   df['aldt'] = pd.to_datetime(df['aldt'])
   df['target'] = (pd.to_datetime(df['aibt']) - pd.to_datetime(df['aldt'])).astype('timedelta64[s]')
@@ -34,6 +35,7 @@ def change_type(df):
             #target = lambda d: (d['aibt'] - d['aldt']).astype('timedelta64[s]'))
   #df = df[(~df['aibt'].isna()) & (~df['aldt'].isna()) & (df['aibt'] != 'aibt')].dropna(how = 'all')
   #df['target'] = (df['aibt'] - df['aldt']).astype('timedelta64[s]')
+
   return df
 
 ## ----------------- Mathieu ---------------------------------
