@@ -36,13 +36,13 @@ def create_target(df):
 
     ## X = final df from master.master_preprocessing
     ## col_numerical = numerical columns of X
-    ## col_to_drop = the columns we don't want in X
-    ## col_dummies = the colonnes where we want dummys
+    ## col_to_drop = the columns we don't want in X = [ 'flight','sto', 'aldt', 'eibt','aibt','cibt', 'chocks_on', 'Manufacturer','Physical Class (Engine)','# Engines','Wingtip Configuration','Tail Height, ft\n(@ OEW)', 'Wheelbase, ft','Cockpit to Main Gear (CMG)', 'MGW\n(Outer to Outer)','Max Ramp\nMax Taxi', 'Main Gear Config', 'ICAO Code', 'Years Manufactured', 'Note','Parking Area (WS x Length), sf','Model','target']
+    ## col_dummies = the colonnes where we want dummys = ['carrier', 'acType','runway','ATCT Weight Class','Wake Category','AAC', 'ADG', 'TDG','SnowProxi']
     ## col_to_target_encode = ['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
     ## y = y from get_target.get_target
-    ## agg_fct is an aggregative fct eg:"mean"
-    ## drop is if we don't want the column anymore
-def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,path_feature,drop=True,CatBoost=False):
+    ## path_feature = features of tristan from the pickel
+
+def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,path_feature,CatBoost=False):
 
     X = pd.concat([X,y],axis=1)
     X = feature_engineering.master_feature_engineering(X, path_feature)
@@ -51,7 +51,7 @@ def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encod
 
     X = feature_engineering.drop_columns(X,col_to_drop)
     X = feature_engineering.imputation(X,col_numerical)
-    X = feature_engineering.target_encoding(X,col_to_target_encode,y,agg_value,drop)
+    X = feature_engineering.target_encoding(X,col_to_target_encode,y)
     list_missing = X.isna().any().index[X.isna().any()]
     X = feature_engineering.imputation(X,list_missing)
     if CatBoost == True:
