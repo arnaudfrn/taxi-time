@@ -179,6 +179,9 @@ def plane_landing_last_hour(X, y):
     """
     function that takes X dataframe WITH AIBT variable and compute the number of plane that take of in the closest round hour
     return dataframe with new variable number_plane_landing
+
+
+    #### TO SOLVE #####
     """
 
     featuredf = pd.concat([y, X], axis = 1)
