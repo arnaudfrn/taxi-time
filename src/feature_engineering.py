@@ -4,6 +4,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_squared_error
 
+from itertools import product
+
 # -------------------- Mathieu----------------------------------
 
 def imputation(X,col_numerical):
@@ -134,3 +136,62 @@ def master_feature_engineering(df, pickle_path):
     df_augmented = create_rolling_average_same_stand(df_augmented)
     df_augmented = create_rolling_average_same_runway_and_stand(df_augmented)
     return df_augmented
+
+
+
+def number_of_plane_at_the_gate(df):
+    """
+    function that takes full DataFrame without cleaning and compute the number of plane at the stand in the closest hour
+    return dataframe with new variable number_plane_landing
+    """
+
+    #Create column time taking both aodt, aibt
+    df.loc[:,'time'] = df['aibt']
+    df.loc[df['time'].isna(), 'time'] = df.loc[df['time'].isna(), 'aobt']
+    df = df[~df['time'].isna()]
+    
+    #set time to index to groupby
+    df.loc[:,'time'] = pd.to_datetime(df['time'])
+    df.loc[:,'number_of_plane_at_the_gate'] = 1
+    df = df.set_index('time')
+    
+    #group by 
+    grouper = df.groupby([pd.Grouper(freq='1H'), 'stand']).count()
+    
+    #Get elem of time and stand to create the df on which to merge
+    list_date = df.resample('60T').sum().reset_index()['time'].tolist()
+    list_stand = df['stand'].reset_index(drop=True).unique()
+    
+    #create empty df
+    comb_df = pd.DataFrame(list(product(list_date, list_stand)), columns=['time', 'stand'])
+    
+    #merge on empty df and prepare indices
+    last_df = (comb_df.merge(grouper.reset_index(), on = ['time', 'stand'], how = 'left')
+               .fillna(0)
+               .set_index('time')
+               .sort_index())
+    df = df.drop('number_of_plane_at_the_gate', axis = 1).sort_index()
+    df = pd.merge_asof(df.sort_index(), last_df[['stand', 'number_of_plane_at_the_gate']], on = 'time', direction =  'nearest' , by='stand')
+
+    return df
+
+def plane_landing_last_hour(X, y):
+    """
+    function that takes X dataframe WITH AIBT variable and compute the number of plane that take of in the closest round hour
+    return dataframe with new variable number_plane_landing
+    """
+    
+    featuredf = pd.concat([y, X], axis = 1)
+    featuredf['number_plane_landing'] =  1
+    featuredf['aibt'] = pd.to_datetime(featuredf['aibt'])
+    
+    featuredf = (featuredf.set_index('aibt')
+                 .resample('60T')
+                 .sum()
+                 .sort_index())
+    
+    X['aibt'] = pd.to_datetime(X['aibt'])
+    X = X.set_index('aibt').sort_index()
+    
+    df = pd.merge_asof(Xfeature, featuredf[['number_plane_landing' ]], on = 'aibt', direction = 'nearest')
+    return df
