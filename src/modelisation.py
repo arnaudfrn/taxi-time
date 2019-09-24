@@ -37,6 +37,21 @@ def ninetieth_percentile(y_test, y_pred) :
     """
     return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]
 
+def compute_metrics(y, y_pred) : 
+    """
+    Create a df with all the metrics for a specific result 
+
+    input: real target values and predicted values
+    output : df with the different metrics for a specific y_test / y_pred couple
+    """
+    metrics = pd.DataFrame()
+    metrics['RMSE'] = [compute_rmse(y_test, y_pred)]
+    metrics['MAPE'] = [compute_mape(y_test, y_pred)]
+    metrics['tenth_perc'] = [tenth_percentile(y_test, y_pred)]
+    metrics['ninetieth_perc'] = [ninetieth_percentile(y_test, y_pred)]
+
+    return metrics
+
 def encoding_df(df, cols):
     """
     function to encode categorical. 
