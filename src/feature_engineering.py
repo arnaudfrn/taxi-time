@@ -268,10 +268,11 @@ def arnaud_function3(X, Path_Airporttrain, Path_Airporttest):
                  .resample('60T')
                  .sum()
                  .sort_index())
+
     X['aibt'] = pd.to_datetime(X['aibt'])
     X = X.set_index('aibt').sort_index()
 
-    df = pd.merge_asof(X, df[['number_plane_takeoff' ]], on = 'aibt', direction = 'nearest')
+    df = pd.merge_asof(X, df[['number_plane_takeoff' ]], left_on = 'aibt', right_on = 'aobt', direction = 'nearest')
     return df
 
 
