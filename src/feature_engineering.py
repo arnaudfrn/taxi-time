@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_squared_error
-
+from src.preprocessing import cleaning_airport_df
 from itertools import product
 
 # -------------------- Mathieu----------------------------------
@@ -176,7 +176,7 @@ def plane_landing_last_hour(X, y):
     function that takes X dataframe WITH AIBT variable and compute the number of plane that take of in the closest round hour
     return dataframe with new variable number_plane_landing
     """
-    
+
     featuredf = pd.concat([y, X], axis = 1)
     featuredf['number_plane_landing'] =  1
     featuredf['aibt'] = pd.to_datetime(featuredf['aibt'])
@@ -191,3 +191,26 @@ def plane_landing_last_hour(X, y):
     
     df = pd.merge_asof(Xfeature, featuredf[['number_plane_landing' ]], on = 'aibt', direction = 'nearest')
     return df
+
+def number_plane_takeoff(X, path_airport):  
+    """
+    compute the number of plane taking off in the closest hour to landing. 
+    input X: df of data preprocessed
+    input path_airport: path to airport data
+    output df of row len(X)
+    """
+    df = cleaning_airport_df(Path_AirportData)
+    df.loc[:,'number_plane_takeoff'] =  1
+    df = df[(~df['aobt'].isna())]
+    df['aobt'] = pd.to_datetime(df['aobt'])
+
+    df = (df.set_index('aobt')
+                 .resample('60T')
+                 .sum()
+                 .sort_index())
+    X['aibt'] = pd.to_datetime(X['aibt'])
+    X = X.set_index('aibt').sort_index()
+
+    df = pd.merge_asof(Xfeature, featuredf[['number_plane_takeoff' ]], on = 'aibt', direction = 'nearest')
+    return df
+
