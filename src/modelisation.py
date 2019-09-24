@@ -19,6 +19,15 @@ def compute_mape(y, y_pred):
     """
     return np.mean(np.abs((y - y_pred) / y)) * 100 / 60
 
+def compute_mae(y, y_pred):
+    """
+    function computing MAE 
+
+    input: real target values and predicted values
+    output : root mean squared error in minutes
+    """
+    return np.mean(np.abs((y - y_pred)))/60
+
 def tenth_percentile(y_test, y_pred) :
     """
     Compute the value of the 10th worse error 
@@ -37,7 +46,7 @@ def ninetieth_percentile(y_test, y_pred) :
     """
     return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]
 
-def compute_metrics(y, y_pred) : 
+def compute_metrics(y_test, y_pred) : 
     """
     Create a df with all the metrics for a specific result 
 
@@ -47,9 +56,10 @@ def compute_metrics(y, y_pred) :
     metrics = pd.DataFrame()
     metrics['RMSE'] = [compute_rmse(y_test, y_pred)]
     metrics['MAPE'] = [compute_mape(y_test, y_pred)]
+    metrics['MAE'] = [compute_mae(y_test, y_pred)]
     metrics['tenth_perc'] = [tenth_percentile(y_test, y_pred)]
-    metrics['ninetieth_perc'] = [ninetieth_percentile(y_test, y_pred)]
-
+    metrics['ninetieth_perc'] = [ninetieth_percentile(y_test, y_pred)]        
+    
     return metrics
 
 def encoding_df(df, cols):
@@ -84,7 +94,7 @@ def encoding_df(df, cols):
 
 #----------
 
-def decision_tree(df, variables,test_size):
+def decision_tree(df, variables, test_size):
     """
     function building decision tree
 
