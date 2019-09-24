@@ -43,7 +43,7 @@ def dummies(X,col_category) :
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
     ## column_list =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
-def target_encoding(df,column_list,y,agg_fct,drop=False):
+def target_encoding(df,column_list,y,agg_fct,drop=True):
     for column in column_list:
         target_enco_acType = pd.concat([df[column],y], axis=1)
         target_enco_acType = target_enco_acType.groupby(df[column]).agg(agg_fct)
@@ -145,7 +145,7 @@ def create_rolling_average_same_runway_and_stand(df):
 ## input : ouput of master preprocessing function (dataframe) merged with target (as a column called 'target') and pickle path of the FEATURE THAT TAKES A FUCKING WHILE TO CREATE
 ## output: dataframe with new variable ready to use
 def master_feature_engineering(df, pickle_path):
-    df['nb of planes in movement in the plane'] = pd.read_pickle(path)
+    df['nb of planes in movement in the plane'] = pd.read_pickle(pickle_path)
     df_augmented = create_rolling_average_same_runway(df)
     df_augmented = create_rolling_average_same_stand(df_augmented)
     df_augmented = create_rolling_average_same_runway_and_stand(df_augmented)
