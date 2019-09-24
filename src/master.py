@@ -42,7 +42,12 @@ def create_target(df):
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
-def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop=True,CatBoost=False):
+def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,path_feature,drop=True,CatBoost=False):
+
+    X = pd.concat([X,y],axis=1)
+    X = feature_engineering.master_feature_engineering(X, path_feature)
+    X.dropna(subset=['rolling average same runway & same stand'],inplace=True)
+    y = pd.DataFrame(X['target'])
 
     X = feature_engineering.drop_columns(X,col_to_drop)
     X = feature_engineering.imputation(X,col_numerical)
@@ -54,4 +59,4 @@ def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encod
     else:
         X = feature_engineering.dummies(X,col_dummies)
 
-    return X
+    return X,y
