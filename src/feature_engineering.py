@@ -12,7 +12,7 @@ def imputation(X,col_numerical):
     #col_numerical : list of column numerical
     X.replace({'tbd': np.nan}, inplace=True)
     for i in col_numerical:
-        X[i].fillna(X[i].median(),inplace=True)
+        X[i].fillna(X[i].mean(),inplace=True)
     return X
 
 def drop_columns(X,col_to_drop):

@@ -52,6 +52,8 @@ def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encod
     X = feature_engineering.drop_columns(X,col_to_drop)
     X = feature_engineering.imputation(X,col_numerical)
     X = feature_engineering.target_encoding(X,col_to_target_encode,y)
+    list_missing = X.isna().any().index[X.isna().any()]
+    X = feature_engineering.imputation(X,list_missing)
     if CatBoost == True:
         X[col_dummies] = X[col_dummies].apply(lambda x: x.astype('str'))
         X[col_numerical] = X[col_numerical].apply(lambda x: x.astype('float'))
