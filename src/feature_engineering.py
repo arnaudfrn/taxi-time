@@ -140,15 +140,11 @@ def master_feature_engineering(df, pickle_path):
 
 
 def number_of_plane_at_the_gate(df):
-    """
-    function that takes full DataFrame without cleaning and compute the number of plane at the stand in the closest hour
-    return dataframe with new variable number_plane_landing
-    """
-
+    
     #Create column time taking both aodt, aibt
     df.loc[:,'time'] = df['aibt']
     df.loc[df['time'].isna(), 'time'] = df.loc[df['time'].isna(), 'aobt']
-    df = df[~df['time'].isna()]
+    df = df[(~df['time'].isna()) & (df['time'].isin(['aibt', 'cibt', 'aldt', 'aobt', 'eldt']))]
     
     #set time to index to groupby
     df.loc[:,'time'] = pd.to_datetime(df['time'])
