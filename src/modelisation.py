@@ -46,6 +46,17 @@ def ninetieth_percentile(y_test, y_pred) :
     """
     return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]
 
+def custom_made_metric(y, y_pred, threshold):
+    """
+    function computing MAE 
+
+    input: real target values, predicted values, threshold (in min) to consider harmfull error
+    output : root mean squared error in minutes
+    """
+    error = (y - y_pred)
+    metric = (error > threshold*60)
+    return metric.mean()
+
 def compute_metrics(y_test, y_pred) : 
     """
     Create a df with all the metrics for a specific result 
@@ -57,6 +68,7 @@ def compute_metrics(y_test, y_pred) :
     metrics['RMSE'] = [compute_rmse(y_test, y_pred)]
     metrics['MAPE'] = [compute_mape(y_test, y_pred)]
     metrics['MAE'] = [compute_mae(y_test, y_pred)]
+    metrics['custom_made'] = [custom_made_metric(y_test, y_pred, 3)]
     metrics['tenth_perc'] = [tenth_percentile(y_test, y_pred)]
     metrics['ninetieth_perc'] = [ninetieth_percentile(y_test, y_pred)]        
     
