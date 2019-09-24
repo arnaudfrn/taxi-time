@@ -42,7 +42,7 @@ def create_target(df):
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
-def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop,CatBoost=False):
+def features_pimpage(X,col_numerical,col_to_drop,col_dummies,col_to_target_encode,y,agg_value,drop=True,CatBoost=False):
 
     X = feature_engineering.drop_columns(X,col_to_drop)
     X = feature_engineering.imputation(X,col_numerical)
