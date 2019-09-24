@@ -43,17 +43,14 @@ def dummies(X,col_category) :
     ## agg_fct is an aggregative fct eg:"mean"
     ## drop is if we don't want the column anymore
     ## column_list =['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
-def target_encoding(df,column_list,y,agg_fct,drop=True):
+def target_encoding(df,column_list,y):
     for column in column_list:
         target_enco_acType = pd.concat([df[column],y], axis=1)
-        target_enco_acType = target_enco_acType.groupby(df[column]).agg(agg_fct)
+        target_enco_acType = target_enco_acType.groupby(df[column]).agg('mean')
         target_enco_acType = target_enco_acType.to_dict()['target']
         df['target_encoding_'+column]=df[column].map(target_enco_acType)
-        if drop == True:
-            df.drop(columns=column, inplace=True)
-        else:
-            continue
-        return df
+        df.drop(columns=column, inplace=True)
+    return df
 
 
 def train_test_split(X,y,test_size=10000):
