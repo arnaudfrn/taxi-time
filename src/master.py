@@ -36,8 +36,8 @@ def create_target(df):
 
     ## X = final df from master.master_preprocessing
     ## col_numerical = numerical columns of X
-    ## col_to_drop = the columns we don't want in X
-    ## col_dummies = the colonnes where we want dummys
+    ## col_to_drop = the columns we don't want in X = [ 'flight','sto', 'aldt', 'eibt','aibt','cibt', 'chocks_on', 'Manufacturer','Physical Class (Engine)','# Engines','Wingtip Configuration','Tail Height, ft\n(@ OEW)', 'Wheelbase, ft','Cockpit to Main Gear (CMG)', 'MGW\n(Outer to Outer)','Max Ramp\nMax Taxi', 'Main Gear Config', 'ICAO Code', 'Years Manufactured', 'Note','Parking Area (WS x Length), sf','Model','target']
+    ## col_dummies = the colonnes where we want dummys = ['carrier', 'acType','runway','ATCT Weight Class','Wake Category','AAC', 'ADG', 'TDG','SnowProxi']
     ## col_to_target_encode = ['stand','AAC', 'ADG', 'TDG','Wake Category','ATCT Weight Class']
     ## y = y from get_target.get_target
     ## agg_fct is an aggregative fct eg:"mean"
