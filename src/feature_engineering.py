@@ -140,7 +140,11 @@ def master_feature_engineering(df, pickle_path):
 
 
 def number_of_plane_at_the_gate(df):
-    
+    """
+    function computing the number of plane at the gate in the closest hour before the flight
+    input df: raw df outputed from function clean_airpot_df
+    output df: same as input with extra column 'number_of_plane_at_the_gate'
+    """
     #Create column time taking both aodt, aibt
     df.loc[:,'time'] = df['aibt']
     df.loc[df['time'].isna(), 'time'] = df.loc[df['time'].isna(), 'aobt']
