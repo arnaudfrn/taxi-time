@@ -24,8 +24,8 @@ def merge_df(df_train_clean, df_test_clean):
 ### input: dataframe transformed by features_pimpage
 ### output: two dataframes, two targets dataframes
 def unmerged_df(df_tot):
-	X_train = df_tot[0][df_tot[0]['TESTING']==0]
+	X_train = df_tot[0][df_tot[0]['TESTING']==0].drop('TESTING', axis=1)
 	y_train = df_tot[1].loc[X_train.index]
-	X_test = df_tot[0][df_tot[0]['TESTING']==1]
+	X_test = df_tot[0][df_tot[0]['TESTING']==1].drop('TESTING', axis=1)
 	y_test = df_tot[1].loc[X_test.index]
 	return X_train, y_train, X_test, y_test
