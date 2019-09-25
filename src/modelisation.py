@@ -35,7 +35,7 @@ def tenth_percentile(y_test, y_pred) :
     input: real target values and predicted values
     output : value of the 10th percentile error
     """
-    return np.abs(y_test - y_pred).sort_values(by = 'target').iloc[int(len(y_test)*0.10)]/60
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.10)]/60
 
 def ninetieth_percentile(y_test, y_pred) :
     """
@@ -44,7 +44,7 @@ def ninetieth_percentile(y_test, y_pred) :
     input: real target values and predicted values
     output : value of the 90th percentile error
     """
-    return np.abs(y_test - y_pred).sort_values(by = 'target').iloc[int(len(y_test)*0.90)]/60
+    return np.abs(y_test - y_pred).sort_values().iloc[int(len(y_test)*0.90)]/60
 
 def custom_made_metric(y, y_pred, threshold):
     """
