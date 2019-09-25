@@ -28,6 +28,16 @@ def compute_mae(y, y_pred):
     """
     return np.mean(np.abs((y - y_pred)))/60
 
+def compute_wape(y, y_pred):
+    """
+    function computing MAE 
+
+    input: real target values and predicted values
+    output : root mean squared error in minutes
+    """
+    from mlens.metrics import wape
+    return wape(y,y_pred)
+
 def tenth_percentile(y_test, y_pred) :
     """
     Compute the value of the 10th worse error
@@ -67,6 +77,7 @@ def compute_metrics(y_test, y_pred) :
     metrics = pd.DataFrame()
     metrics['RMSE'] = [compute_rmse(y_test, y_pred)]
     metrics['MAPE'] = [compute_mape(y_test, y_pred)]
+    metrics['WAPE'] = [compute_wape(y_test, y_pred)]
     metrics['MAE'] = [compute_mae(y_test, y_pred)]
     metrics['custom_made'] = [custom_made_metric(y_test, y_pred, 3)]
     metrics['tenth_perc'] = [tenth_percentile(y_test, y_pred)]
